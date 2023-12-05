@@ -1,12 +1,11 @@
-import * as React from "react";
-import { useState } from "react";
+import React, { useState } from "react";
 import { View, ScrollView, Modal } from "react-native";
 
 import AlertBox from "../Components/alerts/AlertBox";
 import AddAlertButton from "../Components/alerts/AddAlertButton";
 
 import { colors } from "../Constants/constants";
-import GenericModal from "../Components/modal/GenericModal";
+import AlertModal from "../Components/modal/AlertModal";
 
 const ReminderScreen = () => {
   const [isModalVisible, setModalVisible] = useState(false);
@@ -32,11 +31,7 @@ const ReminderScreen = () => {
           setModalVisible(!isModalVisible);
         }}
       >
-        <GenericModal
-          closeModal={toggleModal}
-          type={"alert"}
-          title={"Defina um lembrete"}
-        />
+        <AlertModal closeModal={toggleModal} title={"Defina um lembrete"} />
       </Modal>
     </>
   );
