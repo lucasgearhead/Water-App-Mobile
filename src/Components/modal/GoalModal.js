@@ -54,7 +54,8 @@ const GoalModal = ({ closeModal, title }) => {
             }}
             keyboardType="numeric"
             maxLength={4}
-            selectionColor={"black"}
+            selectionColor={"#00000030"}
+            underlineColorAndroid={"#00000000"}
             value={inputValue}
             onChangeText={(text) => setInputValue(text)}
           />

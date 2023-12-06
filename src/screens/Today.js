@@ -45,8 +45,6 @@ const TodayScreen = () => {
     const newValue = parseInt(cupValue, 10);
     setLitersValue(() => [...litersValue, newValue]);
     await AsyncStorage.setItem("litersValue", JSON.stringify(litersValue));
-
-    console.log(litersValue);
   };
 
   return (

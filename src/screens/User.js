@@ -1,5 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { View, Text, Modal, TextInput } from "react-native";
+import { useFocusEffect } from "@react-navigation/native";
+
+import { Ionicons, AntDesign, MaterialIcons } from "@expo/vector-icons";
 
 import { colors } from "../Constants/constants";
 import UserBox from "../Components/user/boxes/UserBox";
@@ -14,30 +17,46 @@ const UserScreen = ({ navigation }) => {
   const [isSoundVisible, setSoundVisible] = useState(false);
   const [isGoalVisible, setGoalVisible] = useState(false);
 
-  useEffect(() => {
-    // Recupere o valor salvo quando o componente for montado
-    const getStoredValue = async () => {
-      try {
-        const storedValue = await AsyncStorage.getItem("userName");
-        if (storedValue !== null) {
-          setUserName(storedValue);
+  const [daysGoalMet, setDaysGoalMet] = useState(0);
+  const [waterConsumption, setWaterConsumption] = useState(0);
+
+  useFocusEffect(
+    React.useCallback(() => {
+      const getStoredValue = async () => {
+        try {
+          const storedNameValue = await AsyncStorage.getItem("userName");
+          const storedGoalMetValue = await AsyncStorage.getItem("goalMet");
+          const storedWaterConsumptionValue = await AsyncStorage.getItem(
+            "waterConsumption"
+          );
+          if (storedNameValue !== null) {
+            setUserName(storedNameValue);
+          }
+          if (storedGoalMetValue !== null) {
+            setDaysGoalMet(storedGoalMetValue);
+          }
+          if (storedWaterConsumptionValue !== null) {
+            setWaterConsumption(storedWaterConsumptionValue);
+          }
+        } catch (error) {
+          console.error("Error getting stored goal value:", error);
         }
-      } catch (error) {
-        console.error("Error getting stored goal value:", error);
-      }
-    };
+      };
 
-    getStoredValue();
-  }, []);
+      getStoredValue();
+    }, [])
+  );
 
-  useEffect(() => {
+  const handleName = () => {
     try {
       AsyncStorage.setItem("userName", username);
       console.log("Username sucessfull saved - ", username);
+      alert(`Nome salvo com sucesso, bem-vindo ${username}`);
     } catch (error) {
       console.error("Error saving user name:", error);
+      alert(`Erro ao salvar o nome de usuário`, error);
     }
-  }, [username]);
+  };
 
   return (
     <View style={{ flex: 1, backgroundColor: colors.terciary }}>
@@ -55,9 +74,7 @@ const UserScreen = ({ navigation }) => {
       <TextInput
         value={username}
         onChangeText={(name) => setUserName(name)}
-        onEndEditing={() =>
-          alert(`Nome salvo com sucesso, bem-vindo ${username}`)
-        }
+        onEndEditing={handleName}
         maxLength={20}
         style={{
           color: "white",
@@ -75,8 +92,8 @@ const UserScreen = ({ navigation }) => {
           justifyContent: "space-around",
         }}
       >
-        <UserBox mililiters={9} days={""} />
-        <UserBox mililiters={""} days={5} />
+        <UserBox mililiters={waterConsumption} days={""} />
+        <UserBox mililiters={""} days={daysGoalMet} />
       </View>
       <View
         style={{

@@ -33,7 +33,7 @@ export default function UserBox({ days, mililiters }) {
         </Text>
       </View>
       <Text style={[styles.text, { fontSize: 17 }]}>
-        {days !== "" ? "Total ingerido" : "Total realizado"}
+        {days !== "" ? "Total realizado" : "Total ingerido"}
       </Text>
     </View>
   );
