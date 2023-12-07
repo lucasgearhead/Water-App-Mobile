@@ -1,14 +1,7 @@
 import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
 import React from "react";
 
-import {
-  Ionicons,
-  AntDesign,
-  MaterialIcons,
-  MaterialCommunityIcons,
-} from "@expo/vector-icons";
-
-import { colors } from "../../../Constants/constants";
+import { Ionicons, Entypo } from "@expo/vector-icons";
 
 export default function SettingsButton({ type, onPress }) {
   return (
@@ -29,7 +22,7 @@ export default function SettingsButton({ type, onPress }) {
           {type === "reminder" ? (
             <Ionicons name="alarm-outline" size={34} />
           ) : type === "goal" ? (
-            <Ionicons name="water-outline" size={34} />
+            <Entypo name="circular-graph" size={34} />
           ) : (
             <Ionicons name="settings-outline" size={34} />
           )}

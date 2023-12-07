@@ -61,7 +61,7 @@ const SoundModal = ({ closeModal, title }) => {
         >
           <AntDesign name="sound" size={30} />
 
-          <Text style={{ width: 130, textAlign: "left", fontWeight: "bold" }}>
+          <Text style={{ width: 130, textAlign: "left", fontSize: 20 }}>
             Sons
           </Text>
           <Switch
@@ -81,7 +81,7 @@ const SoundModal = ({ closeModal, title }) => {
           }}
         >
           <MaterialIcons name="vibration" size={30} color="black" />
-          <Text style={{ width: 130, textAlign: "left", fontWeight: "bold" }}>
+          <Text style={{ width: 130, textAlign: "left", fontSize: 20 }}>
             Vibrações
           </Text>
           <Switch
@@ -123,7 +123,7 @@ const styles = StyleSheet.create({
   },
   title: {
     alignSelf: "center",
-    fontSize: 20,
+    fontSize: 22,
   },
   inputRow: {
     flexDirection: "row",
