@@ -3,7 +3,7 @@ import { React, useState } from "react";
 
 import { colors } from "../../Constants/constants";
 
-export default function AlertBox({ time }) {
+export default function AlertBox({ item, time }) {
   const [switchValue, setSwitchValue] = useState(false);
 
   const toggleSwitch = () => {
