@@ -1,12 +1,50 @@
-import * as React from "react";
+import React, { useEffect, useState } from "react";
 import { View, Text, TextInput, TouchableOpacity } from "react-native";
 import { colors } from "../Constants/constants";
 
-const TodayScreen = () => {
-  const [value, setValue] = React.useState("200");
+import { useFocusEffect } from "@react-navigation/native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
-  const handleChange = (newValue) => {
-    setValue(newValue);
+const TodayScreen = () => {
+  const [goalValue, setGoalValue] = useState("");
+  const [cupValue, setCupValue] = useState("");
+  const [litersValue, setLitersValue] = useState([]);
+  const [litersToday, setLitersToday] = useState(0);
+
+  useFocusEffect(
+    React.useCallback(() => {
+      const getStoredValue = async () => {
+        try {
+          const storedCupValue = await AsyncStorage.getItem("cupValue");
+          const storedGoalValue = await AsyncStorage.getItem("goalValue");
+          const storedLitersValue = await AsyncStorage.getItem("litersValue");
+
+          if (storedCupValue !== null) {
+            setCupValue(storedCupValue);
+          }
+          if (storedGoalValue !== null) {
+            setGoalValue(storedGoalValue);
+          }
+          if (storedLitersValue !== null) {
+            setLitersValue(storedLitersValue);
+          }
+        } catch (error) {
+          console.error("Error getting stored values:", error);
+        }
+      };
+
+      getStoredValue();
+    }, [])
+  );
+
+  const handleCupValue = async () => {
+    await AsyncStorage.setItem("cupValue", cupValue);
+  };
+
+  const handleLitersValue = async () => {
+    const newValue = parseInt(cupValue, 10);
+    setLitersValue(() => [...litersValue, newValue]);
+    await AsyncStorage.setItem("litersValue", JSON.stringify(litersValue));
   };
 
   return (
@@ -33,7 +71,7 @@ const TodayScreen = () => {
             gap: 10,
           }}
         >
-          <Text style={{ fontSize: 56 }}>0</Text>
+          <Text style={{ fontSize: 56 }}>{litersToday}</Text>
           <Text style={{ paddingBottom: 10 }}>ml</Text>
         </View>
         <View>
@@ -41,7 +79,7 @@ const TodayScreen = () => {
         </View>
         <View>
           <Text style={{ fontSize: 14, color: colors.grey }}>
-            (Falta 2000 ml para atingir a meta)
+            Faltam {goalValue - litersToday} ml para atingir sua meta!
           </Text>
         </View>
       </View>
@@ -57,7 +95,7 @@ const TodayScreen = () => {
           style={{
             position: "absolute",
             height: 300,
-            width: 380,
+            width: "100%",
             backgroundColor: colors.primary,
             bottom: -160,
           }}
@@ -80,9 +118,11 @@ const TodayScreen = () => {
                 borderColor: "#00000000",
                 borderWidth: 0,
               }}
-              value={value}
-              onChangeText={handleChange}
+              onEndEditing={handleCupValue}
               keyboardType="numeric"
+              maxLength={4}
+              value={cupValue}
+              onChangeText={(value) => setCupValue(value)}
             />
             <Text
               style={{
@@ -96,6 +136,7 @@ const TodayScreen = () => {
           </View>
 
           <TouchableOpacity
+            onPress={handleLitersValue}
             style={{
               elevation: 10,
               marginBottom: 40,

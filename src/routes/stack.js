@@ -1,20 +1,41 @@
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button, View, Switch } from "react-native";
-
 import ReminderScreen from "../screens/Reminder";
 import TabRoutes from "./tab";
-
 import { colors } from "../Constants/constants";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const Stack = createNativeStackNavigator();
 
 export default function StackRoutes() {
-  const [switchValue, setSwitchValue] = useState(false);
+  const [remindersSwitchValue, setRemindersSwitchValue] = useState(false);
 
-  const toggleSwitch = () => {
-    setSwitchValue((prevValue) => !prevValue);
-  };
+  useEffect(() => {
+    const getStoredValue = async () => {
+      try {
+        const storedValue = await AsyncStorage.getItem("remindersSwitchValue");
+        if (storedValue !== null) {
+          setRemindersSwitchValue(storedValue === "true");
+        }
+      } catch (error) {
+        console.error("Error getting stored goal value:", error);
+      }
+    };
+    getStoredValue();
+  }, []);
+
+  useEffect(() => {
+    try {
+      AsyncStorage.setItem(
+        "remindersSwitchValue",
+        remindersSwitchValue.toString()
+      );
+    } catch (error) {
+      console.error("Error saving user name:", error);
+    }
+    console.log("Reminder -", remindersSwitchValue);
+  }, [remindersSwitchValue]);
 
   return (
     <Stack.Navigator>
@@ -33,10 +54,12 @@ export default function StackRoutes() {
           headerRight: () => (
             <View style={{ marginRight: 10 }}>
               <Switch
-                value={switchValue}
-                onValueChange={toggleSwitch}
+                value={remindersSwitchValue}
+                onValueChange={() =>
+                  setRemindersSwitchValue(!remindersSwitchValue)
+                }
                 trackColor={{ false: "#b2b2b2", true: colors.secondary }}
-                thumbColor={switchValue ? colors.primary : "#dcdcdc"}
+                thumbColor={remindersSwitchValue ? colors.primary : "#dcdcdc"}
               />
             </View>
           ),

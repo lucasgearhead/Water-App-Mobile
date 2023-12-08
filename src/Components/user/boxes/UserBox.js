@@ -1,6 +1,8 @@
 import { StyleSheet, Text, View } from "react-native";
 import React from "react";
 
+import { Ionicons } from "@expo/vector-icons";
+
 import { colors } from "../../../Constants/constants";
 
 export default function UserBox({ days, mililiters }) {
@@ -11,13 +13,32 @@ export default function UserBox({ days, mililiters }) {
         width: 160,
         backgroundColor: colors.backgorundBox,
         borderRadius: 20,
-        padding: 8,
-        paddingLeft: 15,
+        padding: 12,
         justifyContent: "center",
       }}
     >
-      <View>
-        <Text style={styles.text}>{days !== "" ? "Icon-1" : "Icon-2"}</Text>
+      <View
+        style={{
+          flexDirection: "row",
+          alignItems: "center",
+          justifyContent: "space-between",
+        }}
+      >
+        <Text style={{ color: "white", fontSize: 15 }}>
+          {days !== "" ? "Total realizado" : "Total ingerido"}
+        </Text>
+        <Text
+          style={{
+            display: "flex",
+            color: "white",
+          }}
+        >
+          {days !== "" ? (
+            <Ionicons name="calendar-outline" size={25} />
+          ) : (
+            <Ionicons name="water-outline" size={25} />
+          )}
+        </Text>
       </View>
       <View style={{ flexDirection: "row" }}>
         <Text style={[styles.text, { fontSize: 40, fontWeight: 600 }]}>
@@ -32,9 +53,6 @@ export default function UserBox({ days, mililiters }) {
           {days !== "" ? "Dias" : "ml"}
         </Text>
       </View>
-      <Text style={[styles.text, { fontSize: 17 }]}>
-        {days !== "" ? "Total ingerido" : "Total realizado"}
-      </Text>
     </View>
   );
 }

@@ -1,9 +1,9 @@
-import { Text, StyleSheet, View, Switch } from "react-native";
+import { Text, StyleSheet, View, Switch, Button } from "react-native";
 import { React, useState } from "react";
 
 import { colors } from "../../Constants/constants";
 
-export default function AlertBox({ time }) {
+export default function AlertBox({ item, time }) {
   const [switchValue, setSwitchValue] = useState(false);
 
   const toggleSwitch = () => {
@@ -41,12 +41,7 @@ export default function AlertBox({ time }) {
           flexDirection: "row",
         }}
       >
-        <Switch
-          value={switchValue}
-          onValueChange={toggleSwitch}
-          trackColor={{ false: "#b2b2b2", true: colors.secondary }}
-          thumbColor={switchValue ? colors.primary : "#dcdcdc"}
-        />
+        <Button title="delete" />
         <Switch
           value={switchValue}
           onValueChange={toggleSwitch}
