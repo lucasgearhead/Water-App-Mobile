@@ -15,12 +15,25 @@ export default function AddAlertButton({ onPress }) {
         position: "absolute",
         bottom: 35,
         right: 35,
+        margin: 0,
+        padding: 0,
         justifyContent: "center",
         alignItems: "center",
       }}
       onPress={onPress}
     >
-      <Ionicons name="add" size={52} color={colors.backgorundBox} />
+      <Ionicons
+        name="add"
+        style={{
+          alignContent: "center",
+          alignItems: "center",
+          alignSelf: "center",
+          textAlign: "center",
+          justifyContent: "center",
+        }}
+        size={55}
+        color={colors.backgorundBox}
+      />
     </TouchableOpacity>
   );
 }
