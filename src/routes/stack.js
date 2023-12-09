@@ -49,6 +49,8 @@ export default function StackRoutes() {
         component={ReminderScreen}
         options={{
           headerTransparent: false,
+          headerStyle: { backgroundColor: colors.white },
+          headerShadowVisible: false,
           headerShown: true,
           title: "Lembretes",
           headerRight: () => (
