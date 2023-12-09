@@ -5,7 +5,7 @@ import GenericButton from "../buttons/GenericButton";
 
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-const AlertModal = ({ closeModal, title, type }) => {
+const AlertModal = ({ closeModal, title, onConfirm }) => {
   const [selectedHour, setSelectedHour] = useState("");
   const [selectedMinute, setSelectedMinute] = useState("");
 
@@ -58,6 +58,7 @@ const AlertModal = ({ closeModal, title, type }) => {
 
       // Close the modal
       closeModal();
+      onConfirm();
     } catch (error) {
       console.error("Error saving time to AsyncStorage:", error);
     }
