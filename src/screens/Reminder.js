@@ -45,6 +45,7 @@ const ReminderScreen = () => {
     updatedTimes.splice(index, 1);
     setStoredTimes(updatedTimes);
     await AsyncStorage.setItem("selectedTimes", JSON.stringify(updatedTimes));
+    refresh();
   };
 
   return (
