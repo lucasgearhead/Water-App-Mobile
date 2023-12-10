@@ -1,6 +1,6 @@
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { useState, useEffect } from "react";
-import { Button, View, Switch } from "react-native";
+import { Switch, TouchableOpacity } from "react-native";
 import ReminderScreen from "../screens/Reminder";
 import TabRoutes from "./tab";
 import { colors } from "../Constants/constants";
@@ -38,7 +38,7 @@ export default function StackRoutes() {
   }, [remindersSwitchValue]);
 
   return (
-    <Stack.Navigator>
+    <Stack.Navigator initialRouteName="tabs">
       <Stack.Screen
         name="tabs"
         component={TabRoutes}
@@ -53,17 +53,16 @@ export default function StackRoutes() {
           headerShadowVisible: false,
           headerShown: true,
           title: "Lembretes",
+          animation: "none",
           headerRight: () => (
-            <View style={{ marginRight: 10 }}>
-              <Switch
-                value={remindersSwitchValue}
-                onValueChange={() =>
-                  setRemindersSwitchValue(!remindersSwitchValue)
-                }
-                trackColor={{ false: "#b2b2b2", true: colors.secondary }}
-                thumbColor={remindersSwitchValue ? colors.primary : "#dcdcdc"}
-              />
-            </View>
+            <Switch
+              value={remindersSwitchValue}
+              onValueChange={() =>
+                setRemindersSwitchValue(!remindersSwitchValue)
+              }
+              trackColor={{ false: "#b2b2b2", true: colors.secondary }}
+              thumbColor={remindersSwitchValue ? colors.primary : "#dcdcdc"}
+            />
           ),
         }}
       />

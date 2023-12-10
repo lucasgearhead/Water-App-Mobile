@@ -6,11 +6,13 @@ import AlertBox from "../Components/alerts/AlertBox";
 import AlertModal from "../Components/modal/AlertModal";
 import AddAlertButton from "../Components/alerts/AddAlertButton";
 import { colors } from "../Constants/constants";
+
 import { useNavigation } from "@react-navigation/native";
 
 const ReminderScreen = () => {
   const [isModalVisible, setModalVisible] = useState(false);
   const [storedTimes, setStoredTimes] = useState([]);
+  const navigation = useNavigation();
 
   useFocusEffect(
     React.useCallback(() => {
@@ -28,18 +30,21 @@ const ReminderScreen = () => {
     }, [])
   );
 
-  const navigation = useNavigation();
-
   const refresh = () => {
-    navigation.replace("reminder", { Animation: false });
+    setTimeout(() => {
+      navigation.replace("reminder");
+    }, 100);
   };
 
   const toggleModal = () => {
     setModalVisible(!isModalVisible);
   };
 
-  const bin = async () => {
-    await AsyncStorage.setItem("selectedTimes", "");
+  const deleteTime = async (index) => {
+    const updatedTimes = [...storedTimes];
+    updatedTimes.splice(index, 1);
+    setStoredTimes(updatedTimes);
+    await AsyncStorage.setItem("selectedTimes", JSON.stringify(updatedTimes));
   };
 
   return (
@@ -50,7 +55,7 @@ const ReminderScreen = () => {
         }}
       >
         {storedTimes.map((time, index) => (
-          <AlertBox key={index} time={time} />
+          <AlertBox key={index} time={time} onPress={() => deleteTime(index)} />
         ))}
         <View style={{ height: 130, backgroundColor: "#00000000" }} />
       </ScrollView>
@@ -78,7 +83,6 @@ const ReminderScreen = () => {
           />
         </View>
       </Modal>
-      <Button title="limpar" onPress={bin} />
     </>
   );
 };

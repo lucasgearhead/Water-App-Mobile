@@ -2,8 +2,6 @@ import React, { useEffect, useState } from "react";
 import { View, Text, Modal, TextInput } from "react-native";
 import { useFocusEffect } from "@react-navigation/native";
 
-import { Ionicons, AntDesign, MaterialIcons } from "@expo/vector-icons";
-
 import { colors } from "../Constants/constants";
 import UserBox from "../Components/user/boxes/UserBox";
 import SettingsButton from "../Components/user/buttons/SettingsButton";

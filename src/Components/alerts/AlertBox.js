@@ -47,7 +47,7 @@ export default function AlertBox({ time, onPress }) {
           flexDirection: "row",
         }}
       >
-        <TouchableOpacity onPress={() => onPress}>
+        <TouchableOpacity onPress={onPress}>
           <Ionicons name="trash" size={20} color={"white"} />
         </TouchableOpacity>
       </View>
