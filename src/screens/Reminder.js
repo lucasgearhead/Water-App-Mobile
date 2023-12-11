@@ -9,7 +9,11 @@ import { colors } from "../Constants/constants";
 
 import { useNavigation } from "@react-navigation/native";
 
+import { useNotification } from "../utils/notifications";
+
 const ReminderScreen = () => {
+  const { schedulePushNotifications } = useNotification();
+
   const [isModalVisible, setModalVisible] = useState(false);
   const [storedTimes, setStoredTimes] = useState([]);
   const navigation = useNavigation();
@@ -34,6 +38,7 @@ const ReminderScreen = () => {
     setTimeout(() => {
       navigation.replace("reminder");
     }, 100);
+    schedulePushNotifications();
   };
 
   const toggleModal = () => {
