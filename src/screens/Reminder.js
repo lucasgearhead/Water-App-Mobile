@@ -1,14 +1,12 @@
-import React, { useState, useEffect } from "react";
-import { View, ScrollView, Modal, Text, Button } from "react-native";
+import React, { useState } from "react";
+import { View, ScrollView, Modal } from "react-native";
 import { useFocusEffect } from "@react-navigation/native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import AlertBox from "../Components/alerts/AlertBox";
 import AlertModal from "../Components/modal/AlertModal";
 import AddAlertButton from "../Components/alerts/AddAlertButton";
 import { colors } from "../Constants/constants";
-
 import { useNavigation } from "@react-navigation/native";
-
 import { useNotification } from "../utils/notifications";
 
 const ReminderScreen = () => {

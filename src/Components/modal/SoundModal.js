@@ -1,7 +1,8 @@
-import React, { useEffect, useState } from "react";
-import { View, Text, TextInput, StyleSheet, Switch } from "react-native";
+import React, { useState } from "react";
+import { View, Text, StyleSheet, Switch } from "react-native";
+import { Vibration } from "react-native"; // Importe o módulo Vibration
 
-import { Ionicons, AntDesign, MaterialIcons } from "@expo/vector-icons";
+import { AntDesign, MaterialIcons } from "@expo/vector-icons";
 
 import { useFocusEffect } from "@react-navigation/native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -12,6 +13,11 @@ import GenericButton from "../buttons/GenericButton";
 const SoundModal = ({ closeModal, title }) => {
   const [isSound, setIsSound] = useState(false);
   const [isVibe, setIsVibe] = useState(false);
+
+  const changeVibe = () => {
+    setIsVibe(!isVibe);
+    isVibe ? "" : Vibration.vibrate(100);
+  };
 
   useFocusEffect(
     React.useCallback(() => {
@@ -39,7 +45,7 @@ const SoundModal = ({ closeModal, title }) => {
     try {
       AsyncStorage.setItem("isSound", isSound.toString());
       AsyncStorage.setItem("isVibe", isVibe.toString());
-      console.log("Sound - ", isSound, "Vibe - ", isVibe);
+      console.log("Sound-", isSound, "| Vibe-", isVibe);
     } catch (error) {
       console.error("Error saving user name:", error);
     }
@@ -66,7 +72,9 @@ const SoundModal = ({ closeModal, title }) => {
           </Text>
           <Switch
             value={isSound}
-            onValueChange={() => setIsSound(!isSound)}
+            onValueChange={() => {
+              setIsSound(!isSound);
+            }}
             trackColor={{ false: "#b2b2b2", true: colors.secondary }}
             thumbColor={isSound ? colors.primary : "#dcdcdc"}
           />
@@ -86,7 +94,7 @@ const SoundModal = ({ closeModal, title }) => {
           </Text>
           <Switch
             value={isVibe}
-            onValueChange={() => setIsVibe(!isVibe)}
+            onValueChange={changeVibe}
             trackColor={{ false: "#b2b2b2", true: colors.secondary }}
             thumbColor={isVibe ? colors.primary : "#dcdcdc"}
           />

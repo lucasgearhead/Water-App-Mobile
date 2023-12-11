@@ -38,17 +38,14 @@ export function useNotification() {
   const schedulePushNotifications = async () => {
     try {
       const storedTimes = await AsyncStorage.getItem("selectedTimes");
-      console.log(storedTimes);
-
       if (storedTimes) {
         const hours = JSON.parse(storedTimes);
 
-        // Agende notificações diárias para cada horário no array
         for (const hour of hours) {
           const trigger = {
-            hour: parseInt(hour.split(":")[0], 10), // Obtém a hora do horário
-            minute: parseInt(hour.split(":")[1], 10), // Obtém os minutos do horário
-            repeats: true, // Define para repetir diariamente
+            hour: parseInt(hour.split(":")[0], 10),
+            minute: parseInt(hour.split(":")[1], 10),
+            repeats: true,
           };
 
           await schedulePushNotification(trigger);
@@ -61,6 +58,7 @@ export function useNotification() {
 
   return {
     notification,
+    schedulePushNotification,
     schedulePushNotifications,
   };
 }
@@ -70,6 +68,8 @@ export async function schedulePushNotification(trigger) {
     content: {
       title: "Você tem uma nova mensagem! 📬",
       body: "Aqui está o corpo da notificação",
+      vibrate: [0, 1000, 1000],
+      priority: Notifications.AndroidImportance.HIGH,
     },
     trigger,
   });
