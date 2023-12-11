@@ -40,7 +40,7 @@ export function useNotification() {
       const storedTimes = await AsyncStorage.getItem("selectedTimes");
       if (storedTimes) {
         const hours = JSON.parse(storedTimes);
-
+        console.log(hours);
         for (const hour of hours) {
           const trigger = {
             hour: parseInt(hour.split(":")[0], 10),
@@ -68,8 +68,8 @@ export async function schedulePushNotification(trigger) {
     content: {
       title: "Você tem uma nova mensagem! 📬",
       body: "Aqui está o corpo da notificação",
-      vibrate: [0, 1000, 1000],
       priority: Notifications.AndroidImportance.HIGH,
+      vibrate: false,
     },
     trigger,
   });

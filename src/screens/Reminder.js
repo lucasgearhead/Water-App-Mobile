@@ -35,7 +35,7 @@ const ReminderScreen = () => {
   const refresh = () => {
     setTimeout(() => {
       navigation.replace("reminder");
-    }, 100);
+    }, 0);
     schedulePushNotifications();
   };
 
