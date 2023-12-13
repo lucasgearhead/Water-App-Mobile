@@ -8,9 +8,11 @@ import AddAlertButton from "../Components/alerts/AddAlertButton";
 import { colors } from "../Constants/constants";
 import { useNavigation } from "@react-navigation/native";
 import { useNotification } from "../utils/notifications";
+import { Button } from "react-native";
 
 const ReminderScreen = () => {
-  const { schedulePushNotifications } = useNotification();
+  const { schedulePushNotifications, manualPushNotification } =
+    useNotification();
 
   const [isModalVisible, setModalVisible] = useState(false);
   const [storedTimes, setStoredTimes] = useState([]);
@@ -87,6 +89,7 @@ const ReminderScreen = () => {
           />
         </View>
       </Modal>
+      <Button title="notificação manual" onPress={manualPushNotification} />
     </>
   );
 };

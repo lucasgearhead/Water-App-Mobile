@@ -1,6 +1,5 @@
-// NotificationUtils.js
 import { useState, useEffect, useRef } from "react";
-import AsyncStorage from "@react-native-async-storage/async-storage"; // Certifique-se de importar o AsyncStorage correto para sua aplicação
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as Notifications from "expo-notifications";
 
 Notifications.setNotificationHandler({
@@ -16,7 +15,16 @@ export function useNotification() {
   const notificationListener = useRef();
   const responseListener = useRef();
 
+  async function checkNotificationPermissions() {
+    const { status } = await Notifications.requestPermissionsAsync();
+    if (status !== "granted") {
+      console.log("Permissões de notificação não foram concedidas");
+    }
+  }
+
   useEffect(() => {
+    checkNotificationPermissions();
+
     notificationListener.current =
       Notifications.addNotificationReceivedListener((notification) => {
         setNotification(notification);
@@ -60,6 +68,7 @@ export function useNotification() {
     notification,
     schedulePushNotification,
     schedulePushNotifications,
+    manualPushNotification,
   };
 }
 
@@ -69,8 +78,20 @@ export async function schedulePushNotification(trigger) {
       title: "Você tem uma nova mensagem! 📬",
       body: "Aqui está o corpo da notificação",
       priority: Notifications.AndroidImportance.HIGH,
-      vibrate: false,
     },
     trigger,
+  });
+}
+
+export async function manualPushNotification() {
+  await Notifications.scheduleNotificationAsync({
+    content: {
+      title: "Você tem uma nova mensagem manual!",
+      body: "Aqui está o corpo da notificação",
+      priority: Notifications.AndroidImportance.HIGH,
+    },
+    trigger: {
+      seconds: 60,
+    },
   });
 }
