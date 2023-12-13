@@ -5,7 +5,7 @@ import GenericButton from "../buttons/GenericButton";
 
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-const AlertModal = ({ closeModal, title, type }) => {
+const AlertModal = ({ closeModal, title, onConfirm }) => {
   const [selectedHour, setSelectedHour] = useState("");
   const [selectedMinute, setSelectedMinute] = useState("");
 
@@ -39,7 +39,12 @@ const AlertModal = ({ closeModal, title, type }) => {
 
   const handleConfirm = async () => {
     // Save the selected hour to AsyncStorage
-    const selectedTime = `${selectedHour}:${selectedMinute}`;
+    const formattedHour =
+      selectedHour.length === 1 ? `0${selectedHour}` : selectedHour;
+    const formattedMinute =
+      selectedMinute.length === 1 ? `0${selectedMinute}` : selectedMinute;
+    const selectedTime = `${formattedHour}:${formattedMinute}`;
+
     try {
       // Fetch the existing array from AsyncStorage
       const existingTimesString = await AsyncStorage.getItem("selectedTimes");
@@ -48,16 +53,23 @@ const AlertModal = ({ closeModal, title, type }) => {
         : [];
 
       // Add the new time to the array
-      existingTimes.push(selectedTime);
+      const timeExists = existingTimes.includes(selectedTime);
 
-      // Save the updated array back to AsyncStorage
-      await AsyncStorage.setItem(
-        "selectedTimes",
-        JSON.stringify(existingTimes)
-      );
-
-      // Close the modal
-      closeModal();
+      if (!timeExists && selectedTime !== ":") {
+        existingTimes.push(selectedTime);
+        await AsyncStorage.setItem(
+          "selectedTimes",
+          JSON.stringify(existingTimes)
+        );
+        onConfirm();
+        closeModal();
+      } else if (selectedTime == ":") {
+        closeModal();
+        console.log("Hora Inválida");
+      } else {
+        closeModal();
+        console.log("Tempo já existe");
+      }
     } catch (error) {
       console.error("Error saving time to AsyncStorage:", error);
     }

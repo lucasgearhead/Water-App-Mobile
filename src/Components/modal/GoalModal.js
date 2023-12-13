@@ -26,9 +26,8 @@ const GoalModal = ({ closeModal, title }) => {
   const handleConfirm = async () => {
     try {
       await AsyncStorage.setItem("goalValue", inputValue);
-      alert(`Meta salva com sucesso, ${inputValue} ml`);
     } catch (error) {
-      alert("Error saving goal value:", error);
+      console.log("Error saving goal value:", error);
     }
 
     closeModal();

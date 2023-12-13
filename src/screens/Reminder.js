@@ -1,83 +1,56 @@
-import React, { useState, useEffect } from "react";
-import { View, ScrollView, Modal, Text, Button } from "react-native";
+import React, { useState } from "react";
+import { View, ScrollView, Modal } from "react-native";
 import { useFocusEffect } from "@react-navigation/native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import AlertBox from "../Components/alerts/AlertBox";
 import AlertModal from "../Components/modal/AlertModal";
 import AddAlertButton from "../Components/alerts/AddAlertButton";
 import { colors } from "../Constants/constants";
+import { useNavigation } from "@react-navigation/native";
+import { useNotification } from "../utils/notifications";
+import { Button } from "react-native";
 
 const ReminderScreen = () => {
+  const { schedulePushNotifications, manualPushNotification } =
+    useNotification();
+
   const [isModalVisible, setModalVisible] = useState(false);
-
   const [storedTimes, setStoredTimes] = useState([]);
+  const navigation = useNavigation();
 
-  // Use useFocusEffect instead of useEffect
   useFocusEffect(
     React.useCallback(() => {
-      const fetchData = async () => {
+      const callTimes = async () => {
         try {
-          const storedTimesString = await AsyncStorage.getItem("selectedTimes");
-          let storedTimesArray = storedTimesString
-            ? JSON.parse(storedTimesString)
-            : [];
-          storedTimesArray = storedTimesArray.sort((a, b) => {
-            const [aHour, aMinute] = a.split(":").map(Number);
-            const [bHour, bMinute] = b.split(":").map(Number);
-
-            const totalMinutesA = aHour * 60 + aMinute;
-            const totalMinutesB = bHour * 60 + bMinute;
-
-            return totalMinutesA - totalMinutesB;
-          });
-
-          setStoredTimes(storedTimesArray);
+          const horasSalvas = await AsyncStorage.getItem("selectedTimes");
+          if (horasSalvas) {
+            setStoredTimes(JSON.parse(horasSalvas).sort());
+          }
         } catch (error) {
-          console.error("Error fetching data from AsyncStorage:", error);
+          console.error("Erro ao carregar horas do AsyncStorage:", error);
         }
       };
-
-      fetchData();
+      callTimes();
     }, [])
   );
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const storedTimesString = await AsyncStorage.getItem("selectedTimes");
-        const storedTimesArray = storedTimesString
-          ? JSON.parse(storedTimesString)
-          : [];
-        setStoredTimes(JSON.parse(storedTimesArray));
-        console.log(storedTimes);
-      } catch (error) {
-        console.error("Error fetching data from AsyncStorage:", error);
-      }
-    };
-    fetchData();
-  }, [isModalVisible]);
+  const refresh = () => {
+    setTimeout(() => {
+      navigation.replace("reminder");
+    }, 0);
+    schedulePushNotifications();
+  };
 
   const toggleModal = () => {
     setModalVisible(!isModalVisible);
   };
 
-  const bin = async () => {
-    await AsyncStorage.setItem("selectedTimes", "");
-  };
-
-  const deleteItemAtIndex = async (index) => {
-    try {
-      const data = await AsyncStorage.getItem("sua_chave_de_armazenamento");
-      const dataArray = data ? JSON.parse(data) : [];
-      const filteredArray = dataArray.filter((item, i) => i !== index);
-      await AsyncStorage.setItem(
-        "sua_chave_de_armazenamento",
-        JSON.stringify(filteredArray)
-      );
-      console.log("Item deletado com sucesso!");
-    } catch (error) {
-      console.error("Erro ao deletar o item:", error);
-    }
+  const deleteTime = async (index) => {
+    const updatedTimes = [...storedTimes];
+    updatedTimes.splice(index, 1);
+    setStoredTimes(updatedTimes);
+    await AsyncStorage.setItem("selectedTimes", JSON.stringify(updatedTimes));
+    refresh();
   };
 
   return (
@@ -88,11 +61,7 @@ const ReminderScreen = () => {
         }}
       >
         {storedTimes.map((time, index) => (
-          <AlertBox
-            key={index}
-            time={time}
-            onPress={deleteItemAtIndex(index)}
-          />
+          <AlertBox key={index} time={time} onPress={() => deleteTime(index)} />
         ))}
         <View style={{ height: 130, backgroundColor: "#00000000" }} />
       </ScrollView>
@@ -113,10 +82,14 @@ const ReminderScreen = () => {
             alignItems: "center",
           }}
         >
-          <AlertModal closeModal={toggleModal} title={"Defina um lembrete"} />
+          <AlertModal
+            closeModal={toggleModal}
+            title={"Defina um lembrete"}
+            onConfirm={refresh}
+          />
         </View>
       </Modal>
-      <Button title="limpar" onPress={bin} />
+      <Button title="notificação manual" onPress={manualPushNotification} />
     </>
   );
 };
