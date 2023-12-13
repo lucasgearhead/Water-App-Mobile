@@ -25,7 +25,7 @@ const RelatoryScreen = () => {
         ]),
         { iterations: -1 }
       ).start();
-
+      
       Animated.loop(
         Animated.sequence([
           Animated.timing(wave2, {
