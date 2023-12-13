@@ -2,6 +2,8 @@ import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
 import React from "react";
 import { colors } from "../../Constants/constants";
 
+import { Ionicons } from "@expo/vector-icons";
+
 export default function AddAlertButton({ onPress }) {
   return (
     <TouchableOpacity
@@ -13,19 +15,25 @@ export default function AddAlertButton({ onPress }) {
         position: "absolute",
         bottom: 35,
         right: 35,
+        margin: 0,
+        padding: 0,
         justifyContent: "center",
+        alignItems: "center",
       }}
       onPress={onPress}
     >
-      <Text
+      <Ionicons
+        name="add"
         style={{
-          color: colors.backgorundBox,
-          fontSize: 50,
+          alignContent: "center",
+          alignItems: "center",
+          alignSelf: "center",
           textAlign: "center",
+          justifyContent: "center",
         }}
-      >
-        +
-      </Text>
+        size={55}
+        color={colors.backgorundBox}
+      />
     </TouchableOpacity>
   );
 }

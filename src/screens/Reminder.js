@@ -1,27 +1,69 @@
-import * as React from "react";
-import { useState } from "react";
+import React, { useState } from "react";
 import { View, ScrollView, Modal } from "react-native";
-
+import { useFocusEffect } from "@react-navigation/native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import AlertBox from "../Components/alerts/AlertBox";
+import AlertModal from "../Components/modal/AlertModal";
 import AddAlertButton from "../Components/alerts/AddAlertButton";
-
 import { colors } from "../Constants/constants";
-import GenericModal from "../Components/modal/GenericModal";
+import { useNavigation } from "@react-navigation/native";
+import { useNotification } from "../utils/notifications";
+import { Button } from "react-native";
 
 const ReminderScreen = () => {
+  const { schedulePushNotifications, manualPushNotification } =
+    useNotification();
+
   const [isModalVisible, setModalVisible] = useState(false);
+  const [storedTimes, setStoredTimes] = useState([]);
+  const navigation = useNavigation();
+
+  useFocusEffect(
+    React.useCallback(() => {
+      const callTimes = async () => {
+        try {
+          const horasSalvas = await AsyncStorage.getItem("selectedTimes");
+          if (horasSalvas) {
+            setStoredTimes(JSON.parse(horasSalvas).sort());
+          }
+        } catch (error) {
+          console.error("Erro ao carregar horas do AsyncStorage:", error);
+        }
+      };
+      callTimes();
+    }, [])
+  );
+
+  const refresh = () => {
+    setTimeout(() => {
+      navigation.replace("reminder");
+    }, 0);
+    schedulePushNotifications();
+  };
 
   const toggleModal = () => {
     setModalVisible(!isModalVisible);
   };
+
+  const deleteTime = async (index) => {
+    const updatedTimes = [...storedTimes];
+    updatedTimes.splice(index, 1);
+    setStoredTimes(updatedTimes);
+    await AsyncStorage.setItem("selectedTimes", JSON.stringify(updatedTimes));
+    refresh();
+  };
+
   return (
     <>
       <ScrollView
-        style={{ backgroundColor: colors.white, paddingVertical: 10 }}
+        style={{
+          backgroundColor: colors.white,
+        }}
       >
-        <AlertBox time={"10:00"} />
-
-        <View style={{ height: 150 }} />
+        {storedTimes.map((time, index) => (
+          <AlertBox key={index} time={time} onPress={() => deleteTime(index)} />
+        ))}
+        <View style={{ height: 130, backgroundColor: "#00000000" }} />
       </ScrollView>
       <AddAlertButton onPress={toggleModal} />
       <Modal
@@ -32,12 +74,22 @@ const ReminderScreen = () => {
           setModalVisible(!isModalVisible);
         }}
       >
-        <GenericModal
-          closeModal={toggleModal}
-          type={"alert"}
-          title={"Defina um lembrete"}
-        />
+        <View
+          style={{
+            height: "100%",
+            width: "100%",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          <AlertModal
+            closeModal={toggleModal}
+            title={"Defina um lembrete"}
+            onConfirm={refresh}
+          />
+        </View>
       </Modal>
+      <Button title="notificação manual" onPress={manualPushNotification} />
     </>
   );
 };

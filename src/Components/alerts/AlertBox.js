@@ -1,58 +1,55 @@
-import { Text, StyleSheet, View, Switch } from "react-native";
+import {
+  StyleSheet,
+  View,
+  Switch,
+  TextInput,
+  TouchableOpacity,
+} from "react-native";
 import { React, useState } from "react";
 
 import { colors } from "../../Constants/constants";
 
-export default function AlertBox({ time }) {
-  const [switchValue, setSwitchValue] = useState(false);
+import { Ionicons } from "@expo/vector-icons";
 
-  const toggleSwitch = () => {
-    setSwitchValue((prevValue) => !prevValue);
-  };
+export default function AlertBox({ time, onPress }) {
+  const [timeValue, setTimeValue] = useState(time);
 
   return (
     <View
       style={{
-        height: 90,
+        height: 100,
         width: "95%",
         alignSelf: "center",
-        backgroundColor: colors.backgorundBox,
-        borderRadius: 30,
+        backgroundColor: colors.primary,
+        borderRadius: 15,
         display: "flex",
-        justifyContent: "space-around",
+        justifyContent: "space-between",
         alignItems: "center",
         flexDirection: "row",
         marginVertical: 3,
+        padding: 15,
       }}
     >
-      <Text
+      <TextInput
         style={{
-          color: colors.text,
+          color: colors.white,
           display: "flex",
           justifyContent: "center",
           alignItems: "center",
           fontSize: 50,
         }}
-      >
-        {time}
-      </Text>
+        value={timeValue}
+        onChangeText={(newValue) => setTimeValue(newValue)}
+        keyboardType="numeric"
+      />
       <View
         style={{
           flexDirection: "row",
         }}
       >
-        <Switch
-          value={switchValue}
-          onValueChange={toggleSwitch}
-          trackColor={{ false: "#b2b2b2", true: colors.secondary }}
-          thumbColor={switchValue ? colors.primary : "#dcdcdc"}
-        />
-        <Switch
-          value={switchValue}
-          onValueChange={toggleSwitch}
-          trackColor={{ false: "#b2b2b2", true: colors.secondary }}
-          thumbColor={switchValue ? colors.primary : "#dcdcdc"}
-        />
+        <TouchableOpacity onPress={onPress}>
+          <Ionicons name="trash" size={20} color={"white"} />
+        </TouchableOpacity>
       </View>
     </View>
   );
