@@ -7,12 +7,9 @@ import AlertModal from "../Components/modal/AlertModal";
 import AddAlertButton from "../Components/alerts/AddAlertButton";
 import { colors } from "../Constants/constants";
 import { useNavigation } from "@react-navigation/native";
-import { useNotification } from "../utils/notifications";
-import { Background } from "../utils/background";
+import { scheduleBackgroundTasks } from "../utils/backgroundTaskScheduler";
 
 const ReminderScreen = () => {
-  const { schedulePushNotifications } = useNotification();
-  const { programarExecucao } = Background();
   const [isModalVisible, setModalVisible] = useState(false);
   const [storedTimes, setStoredTimes] = useState([]);
   const navigation = useNavigation();
@@ -37,7 +34,7 @@ const ReminderScreen = () => {
     setTimeout(() => {
       navigation.replace("reminder");
     }, 0);
-    programarExecucao();
+    scheduleBackgroundTasks();
   };
 
   const toggleModal = () => {
