@@ -1,8 +1,6 @@
 import { StyleSheet, View, Text, TouchableOpacity } from "react-native";
-import { React, useState } from "react";
-
+import { React } from "react";
 import { colors } from "../../Constants/constants";
-
 import { Ionicons } from "@expo/vector-icons";
 
 export default function RegistersBox({ time, value, onPress }) {
@@ -12,7 +10,7 @@ export default function RegistersBox({ time, value, onPress }) {
         height: 100,
         width: "100%",
         alignSelf: "center",
-        backgroundColor: colors.primary,
+        backgroundColor: colors.backgorundBox,
         borderRadius: 15,
         display: "flex",
         justifyContent: "space-between",
