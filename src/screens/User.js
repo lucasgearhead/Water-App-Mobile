@@ -23,21 +23,21 @@ const UserScreen = ({ navigation }) => {
       const getStoredValue = async () => {
         try {
           const storedNameValue = await AsyncStorage.getItem("userName");
-          const storedGoalMetValue = await AsyncStorage.getItem("goalMet");
-          const storedWaterConsumptionValue = await AsyncStorage.getItem(
-            "waterConsumption"
+          const storedGoalMetValue = await AsyncStorage.getItem(
+            "daysGoalAchieved"
           );
+
           if (storedNameValue !== null) {
             setUserName(storedNameValue);
           }
           if (storedGoalMetValue !== null) {
-            setDaysGoalMet(storedGoalMetValue);
+            const parsedGoalMetValue = JSON.parse(storedGoalMetValue);
+            setDaysGoalMet(parsedGoalMetValue.length);
           }
-          if (storedWaterConsumptionValue !== null) {
-            setWaterConsumption(storedWaterConsumptionValue);
-          }
+
+          await loadTotalLiters();
         } catch (error) {
-          console.error("Error getting stored goal value:", error);
+          console.error("Error getting stored values:", error);
         }
       };
 
@@ -45,14 +45,38 @@ const UserScreen = ({ navigation }) => {
     }, [])
   );
 
+  const loadTotalLiters = async () => {
+    try {
+      const storedWaterConsumptionValue = await AsyncStorage.getItem(
+        "cupsValue"
+      );
+
+      if (storedWaterConsumptionValue !== null) {
+        const parsedWaterConsumptionValue = JSON.parse(
+          storedWaterConsumptionValue
+        );
+
+        // Extrair apenas os valores da propriedade "value" dos objetos
+        const allValues = parsedWaterConsumptionValue.map((cup) => cup.value);
+
+        // Calcular a soma de todos os valores
+        const soma = allValues.reduce((acumulador, valorAtual) => {
+          return acumulador + valorAtual;
+        }, 0);
+
+        setWaterConsumption(soma);
+      }
+    } catch (error) {
+      console.error("Error loading total liters:", error);
+    }
+  };
+
   const handleName = () => {
     try {
       AsyncStorage.setItem("userName", username);
-      console.log("Username sucessfull saved - ", username);
       alert(`Nome salvo com sucesso, bem-vindo ${username}`);
     } catch (error) {
       console.error("Error saving user name:", error);
-      alert(`Erro ao salvar o nome de usuário`, error);
     }
   };
 

@@ -7,12 +7,13 @@ import AlertModal from "../Components/modal/AlertModal";
 import AddAlertButton from "../Components/alerts/AddAlertButton";
 import { colors } from "../Constants/constants";
 import { useNavigation } from "@react-navigation/native";
-import { scheduleBackgroundTasks } from "../utils/backgroundTaskScheduler";
+import { useNotification } from "../utils/notifications";
 
 const ReminderScreen = () => {
   const [isModalVisible, setModalVisible] = useState(false);
   const [storedTimes, setStoredTimes] = useState([]);
   const navigation = useNavigation();
+  const { schedulePushNotifications } = useNotification();
 
   useFocusEffect(
     React.useCallback(() => {
@@ -34,7 +35,7 @@ const ReminderScreen = () => {
     setTimeout(() => {
       navigation.replace("reminder");
     }, 0);
-    scheduleBackgroundTasks();
+    schedulePushNotifications();
   };
 
   const toggleModal = () => {

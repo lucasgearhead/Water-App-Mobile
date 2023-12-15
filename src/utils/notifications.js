@@ -69,11 +69,11 @@ export function useNotification() {
   };
 }
 
-export async function schedulePushNotification(liter) {
+export async function schedulePushNotification(trigger) {
   await Notifications.scheduleNotificationAsync({
     content: {
-      title: `litros: ${liter}`,
+      title: "Não se esqueça de tomar água!",
     },
-    trigger: null,
+    trigger,
   });
 }
