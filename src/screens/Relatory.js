@@ -9,6 +9,8 @@ import {
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useFocusEffect } from "@react-navigation/native";
+import { LineChart } from "react-native-svg-charts";
+import * as shape from "d3-shape";
 
 // Defina ou importe seu objeto colors
 const colors = {
@@ -69,6 +71,15 @@ const RelatoryScreen = () => {
   return (
     <ScrollView style={styles.container}>
       <Text style={styles.title}>Relatório Diário</Text>
+      <View style={styles.chartContainer}>
+        <LineChart
+          style={styles.chart}
+          data={todayCups.map((cup) => cup.value)}
+          svg={{ stroke: colors.primary }}
+          contentInset={{ top: 20, bottom: 20 }}
+          curve={shape.curveNatural}
+        />
+      </View>
       {todayCups.map((cup) => (
         <View key={cup.timestamp} style={styles.cupContainer}>
           <Text style={styles.cupText}>{`Volume: ${cup.value} ml`}</Text>
@@ -98,6 +109,13 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     marginBottom: 20,
     color: colors.primary,
+  },
+  chartContainer: {
+    height: 200,
+    padding: 20,
+  },
+  chart: {
+    flex: 1,
   },
   cupContainer: {
     backgroundColor: colors.card,
