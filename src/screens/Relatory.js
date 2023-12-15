@@ -9,10 +9,11 @@ import {
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useFocusEffect } from "@react-navigation/native";
-import { LineChart } from "react-native-svg-charts";
+import { LineChart, YAxis, XAxis } from "react-native-svg-charts";
+import { Circle } from "react-native-svg";
 import * as shape from "d3-shape";
+import RegistersBox from "../Components/registers/registersBox";
 
-// Defina ou importe seu objeto colors
 const colors = {
   background: "#ffffff",
   primary: "#007bff",
@@ -20,6 +21,20 @@ const colors = {
   text: "#333333",
   delete: "#ff0000",
   white: "#ffffff",
+};
+
+const Decorator = ({ x, y, data }) => {
+  return data.map((value, index) => (
+    <View key={index}>
+      <Circle
+        cx={x(index)}
+        cy={y(value)}
+        r={3}
+        stroke={colors.primary}
+        fill={colors.primary}
+      />
+    </View>
+  ));
 };
 
 const RelatoryScreen = () => {
@@ -71,35 +86,62 @@ const RelatoryScreen = () => {
   return (
     <ScrollView style={styles.container}>
       <Text style={styles.title}>Relatório Diário</Text>
-      <View style={styles.chartContainer}>
-        <LineChart
-          style={styles.chart}
-          data={todayCups.map((cup) => cup.value)}
-          svg={{ stroke: colors.primary }}
-          contentInset={{ top: 20, bottom: 20 }}
-          curve={shape.curveNatural}
-        />
-      </View>
-      {todayCups.map((cup) => (
-        <View key={cup.timestamp} style={styles.cupContainer}>
-          <Text style={styles.cupText}>{`Volume: ${cup.value} ml`}</Text>
-          <Text style={styles.cupText}>{`Hora: ${new Date(
-            cup.timestamp
-          ).toLocaleTimeString()}`}</Text>
-          <TouchableOpacity
-            onPress={() => handleDeleteCup(cup.timestamp)}
-            style={styles.deleteButton}
-          >
-            <Text style={styles.deleteButtonText}>Deletar</Text>
-          </TouchableOpacity>
+
+      {todayCups.length === 0 ? (
+        <View style={styles.noRecordsContainer}>
+          <Text style={styles.noRecordsText}>
+            Seu histórico de consumo será exibido aqui
+          </Text>
         </View>
-      ))}
+      ) : (
+        <>
+          <View style={styles.chartContainer}>
+            <LineChart
+              style={styles.chart}
+              data={todayCups.map((cup) => cup.value)}
+              svg={{ stroke: colors.primary }}
+              contentInset={{ top: 20, bottom: 20, right: 20, left: 20 }}
+              curve={shape.curveNatural}
+            >
+              <Decorator />
+            </LineChart>
+            <YAxis
+              data={todayCups.map((cup) => cup.value)}
+              contentInset={{ top: 20, bottom: 20 }}
+              svg={{ fill: "grey", fontSize: 10 }}
+            />
+            <XAxis
+              data={todayCups.map((_, index) => index)}
+              formatLabel={(value, index) => index}
+              contentInset={{ left: 30, right: 30 }}
+              svg={{ fontSize: 10, fill: "black" }}
+            />
+          </View>
+          <View
+            style={{
+              height: 1,
+              backgroundColor: "blue",
+              width: "100%",
+              marginVertical: 10,
+            }}
+          />
+          {todayCups.map((cup) => (
+            <RegistersBox
+              time={`${cup.value} ml`}
+              value={`${new Date(cup.timestamp).toLocaleTimeString()}`}
+              onPress={() => handleDeleteCup(cup.timestamp)}
+              key={cup.timestamp}
+            />
+          ))}
+        </>
+      )}
     </ScrollView>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
+    paddingTop: 40,
     flex: 1,
     backgroundColor: colors.background,
     padding: 20,
@@ -111,8 +153,8 @@ const styles = StyleSheet.create({
     color: colors.primary,
   },
   chartContainer: {
-    height: 200,
-    padding: 20,
+    height: 300,
+    flexDirection: "row",
   },
   chart: {
     flex: 1,
@@ -137,6 +179,15 @@ const styles = StyleSheet.create({
   deleteButtonText: {
     color: colors.white,
     fontWeight: "bold",
+  },
+  noRecordsContainer: {
+    alignItems: "center",
+    justifyContent: "center",
+    marginVertical: 20,
+  },
+  noRecordsText: {
+    fontSize: 18,
+    color: colors.text,
   },
 });
 

@@ -28,6 +28,7 @@ export default function AlertBox({ time, onPress }) {
         flexDirection: "row",
         marginVertical: 3,
         padding: 15,
+        paddingHorizontal: 25,
       }}
     >
       <TextInput
@@ -42,15 +43,9 @@ export default function AlertBox({ time, onPress }) {
         onChangeText={(newValue) => setTimeValue(newValue)}
         keyboardType="numeric"
       />
-      <View
-        style={{
-          flexDirection: "row",
-        }}
-      >
-        <TouchableOpacity onPress={onPress}>
-          <Ionicons name="trash" size={20} color={"white"} />
-        </TouchableOpacity>
-      </View>
+      <TouchableOpacity onPress={onPress}>
+        <Ionicons name="trash" size={25} color={"white"} />
+      </TouchableOpacity>
     </View>
   );
 }
