@@ -165,7 +165,7 @@ const TodayScreen = () => {
         style={{
           flex: 1,
           alignItems: "center",
-          marginTop: 80,
+          marginTop: 50,
         }}
       >
         <View
