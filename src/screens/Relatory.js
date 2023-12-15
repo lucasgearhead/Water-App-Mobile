@@ -8,6 +8,7 @@ import {
   ScrollView,
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useFocusEffect } from "@react-navigation/native";
 
 // Defina ou importe seu objeto colors
 const colors = {
@@ -22,30 +23,32 @@ const colors = {
 const RelatoryScreen = () => {
   const [todayCups, setTodayCups] = useState([]);
 
-  useEffect(() => {
-    const fetchTodayCups = async () => {
-      try {
-        const storedCups = await AsyncStorage.getItem("cupsValue");
-        if (storedCups !== null) {
-          const cupsArray = JSON.parse(storedCups);
-          const todayCups = cupsArray.filter((cup) => {
-            const cupDate = new Date(cup.timestamp);
-            const today = new Date();
-            return (
-              cupDate.getDate() === today.getDate() &&
-              cupDate.getMonth() === today.getMonth() &&
-              cupDate.getFullYear() === today.getFullYear()
-            );
-          });
-          setTodayCups(todayCups);
+  useFocusEffect(
+    React.useCallback(() => {
+      const fetchTodayCups = async () => {
+        try {
+          const storedCups = await AsyncStorage.getItem("cupsValue");
+          if (storedCups !== null) {
+            const cupsArray = JSON.parse(storedCups);
+            const todayCups = cupsArray.filter((cup) => {
+              const cupDate = new Date(cup.timestamp);
+              const today = new Date();
+              return (
+                cupDate.getDate() === today.getDate() &&
+                cupDate.getMonth() === today.getMonth() &&
+                cupDate.getFullYear() === today.getFullYear()
+              );
+            });
+            setTodayCups(todayCups);
+          }
+        } catch (error) {
+          console.error("Error fetching today cups:", error);
         }
-      } catch (error) {
-        console.error("Error fetching today cups:", error);
-      }
-    };
+      };
 
-    fetchTodayCups();
-  }, []);
+      fetchTodayCups();
+    }, [])
+  );
 
   const handleDeleteCup = async (cupTimestamp) => {
     try {
