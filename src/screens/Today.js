@@ -184,7 +184,9 @@ const TodayScreen = () => {
         </View>
         <View>
           <Text style={{ fontSize: 14, color: colors.grey }}>
-            Faltam {goalValue - litersToday} ml para atingir sua meta!
+            {goalValue - litersToday <= 0
+              ? "Você atingiu a sua meta hoje!"
+              : `Faltam ${goalValue - litersToday} ml para atingir sua meta!`}
           </Text>
         </View>
       </View>
