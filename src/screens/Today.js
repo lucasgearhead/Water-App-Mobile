@@ -7,44 +7,149 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const TodayScreen = () => {
   const [goalValue, setGoalValue] = useState("");
-  const [cupValue, setCupValue] = useState("");
-  const [litersValue, setLitersValue] = useState([]);
+  const [cupValue, setCupValue] = useState("200");
+  const [cupsValue, setCupsValue] = useState([]);
   const [litersToday, setLitersToday] = useState(0);
+  const [nextReminder, setNextReminder] = useState("");
 
   useFocusEffect(
     React.useCallback(() => {
-      const getStoredValue = async () => {
-        try {
-          const storedCupValue = await AsyncStorage.getItem("cupValue");
-          const storedGoalValue = await AsyncStorage.getItem("goalValue");
-          const storedLitersValue = await AsyncStorage.getItem("litersValue");
-
-          if (storedCupValue !== null) {
-            setCupValue(storedCupValue);
-          }
-          if (storedGoalValue !== null) {
-            setGoalValue(storedGoalValue);
-          }
-          if (storedLitersValue !== null) {
-            setLitersValue(storedLitersValue);
-          }
-        } catch (error) {
-          console.error("Error getting stored values:", error);
-        }
-      };
-
       getStoredValue();
+      calculateNextReminder();
     }, [])
   );
+
+  useEffect(() => {
+    const setDefaultGoalValue = async () => {
+      const storedGoalValue = await AsyncStorage.getItem("goalValue");
+      if (storedGoalValue == null) {
+        setGoalValue("2000");
+      }
+    };
+    setDefaultGoalValue();
+  }, []);
+
+  const getStoredValue = async () => {
+    try {
+      const storedCupValue = await AsyncStorage.getItem("cupValue");
+      const storedGoalValue = await AsyncStorage.getItem("goalValue");
+      const storedCupsValue = await AsyncStorage.getItem("cupsValue");
+
+      if (storedCupValue !== null) {
+        setCupValue(storedCupValue);
+      }
+      if (storedGoalValue !== null) {
+        setGoalValue(storedGoalValue);
+      }
+      if (storedCupsValue !== null) {
+        const parsedCupsValue = JSON.parse(storedCupsValue);
+        setCupsValue(parsedCupsValue);
+        handleLitersToday(parsedCupsValue);
+      }
+    } catch (error) {
+      console.error("Error getting stored values:", error);
+    }
+  };
+
+  const calculateNextReminder = async () => {
+    try {
+      const storedReminderTimes = await AsyncStorage.getItem("selectedTimes");
+      const reminderTimes = storedReminderTimes
+        ? JSON.parse(storedReminderTimes)
+        : [];
+
+      const now = new Date();
+
+      // Converter os horários em objetos Date para comparação correta
+      const upcomingReminders = reminderTimes
+        .map((time) => {
+          const [hours, minutes] = time.split(":");
+          const reminderDate = new Date(now);
+          reminderDate.setHours(
+            parseInt(hours, 10),
+            parseInt(minutes, 10),
+            0,
+            0
+          );
+          return reminderDate;
+        })
+        .filter((reminderDate) => reminderDate > now);
+
+      if (upcomingReminders.length > 0) {
+        // Ordenar os lembretes por data e pegar o próximo
+        upcomingReminders.sort((a, b) => a - b);
+        const nextReminderDate = upcomingReminders[0];
+
+        // Formatar a mensagem do próximo lembrete
+        const nextReminderTime = `${nextReminderDate.getHours()}:${nextReminderDate.getMinutes()}`;
+        setNextReminder(`Próximo lembrete às ${nextReminderTime}`);
+      } else {
+        setNextReminder("Não possui mais lembretes hoje.");
+      }
+    } catch (error) {
+      console.error("Error calculating next reminder:", error);
+    }
+  };
+
+  const handleLitersToday = (values) => {
+    const today = new Date();
+
+    today.setHours(0, 0, 0, 0);
+
+    const litersTodayValues = values
+      .filter((cup) => cup.timestamp >= today.getTime())
+      .map((cup) => cup.value);
+
+    const soma = litersTodayValues.reduce((acumulador, valorAtual) => {
+      return acumulador + valorAtual;
+    }, 0);
+
+    setLitersToday(soma);
+
+    if (soma >= parseInt(goalValue, 10)) {
+      markDailyGoalAchieved();
+    }
+  };
 
   const handleCupValue = async () => {
     await AsyncStorage.setItem("cupValue", cupValue);
   };
 
-  const handleLitersValue = async () => {
-    const newValue = parseInt(cupValue, 10);
-    setLitersValue(() => [...litersValue, newValue]);
-    await AsyncStorage.setItem("litersValue", JSON.stringify(litersValue));
+  const handleCupsValue = async () => {
+    const newValue = {
+      timestamp: new Date().getTime(),
+      value: parseInt(cupValue, 10),
+    };
+
+    const updatedCupsValue = [...cupsValue, newValue];
+    await AsyncStorage.setItem("cupsValue", JSON.stringify(updatedCupsValue));
+    setCupsValue(updatedCupsValue);
+    handleLitersToday(updatedCupsValue);
+  };
+
+  const markDailyGoalAchieved = async () => {
+    try {
+      const daysGoalAchieved = await AsyncStorage.getItem("daysGoalAchieved");
+
+      let parsedDaysGoalAchieved = daysGoalAchieved
+        ? JSON.parse(daysGoalAchieved)
+        : [];
+
+      // Adicionar o dia atual à lista
+      const today = new Date().toISOString().split("T")[0];
+      if (!parsedDaysGoalAchieved.includes(today)) {
+        parsedDaysGoalAchieved.push(today);
+        // Armazenar a lista atualizada no AsyncStorage
+        await AsyncStorage.setItem(
+          "daysGoalAchieved",
+          JSON.stringify(parsedDaysGoalAchieved)
+        );
+
+        // Você pode adicionar qualquer outra lógica ou notificação aqui, se necessário
+      }
+    } catch (error) {
+      console.error("Error marking daily goal achieved:", error);
+    }
   };
 
   return (
@@ -75,11 +180,13 @@ const TodayScreen = () => {
           <Text style={{ paddingBottom: 10 }}>ml</Text>
         </View>
         <View>
-          <Text style={{ fontSize: 14 }}>Próximo lembrete 13:00</Text>
+          <Text style={{ fontSize: 14 }}>{nextReminder}</Text>
         </View>
         <View>
           <Text style={{ fontSize: 14, color: colors.grey }}>
-            Faltam {goalValue - litersToday} ml para atingir sua meta!
+            {goalValue - litersToday <= 0
+              ? "Você atingiu a sua meta hoje!"
+              : `Faltam ${goalValue - litersToday} ml para atingir sua meta!`}
           </Text>
         </View>
       </View>
@@ -136,7 +243,7 @@ const TodayScreen = () => {
           </View>
 
           <TouchableOpacity
-            onPress={handleLitersValue}
+            onPress={handleCupsValue}
             style={{
               elevation: 10,
               marginBottom: 40,

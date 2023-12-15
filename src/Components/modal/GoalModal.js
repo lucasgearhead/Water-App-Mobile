@@ -12,6 +12,7 @@ const GoalModal = ({ closeModal, title }) => {
     const getStoredValue = async () => {
       try {
         const storedValue = await AsyncStorage.getItem("goalValue");
+
         if (storedValue !== null) {
           setInputValue(storedValue);
         }

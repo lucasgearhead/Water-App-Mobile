@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { View, ScrollView, Modal } from "react-native";
 import { useFocusEffect } from "@react-navigation/native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -8,15 +8,12 @@ import AddAlertButton from "../Components/alerts/AddAlertButton";
 import { colors } from "../Constants/constants";
 import { useNavigation } from "@react-navigation/native";
 import { useNotification } from "../utils/notifications";
-import { Button } from "react-native";
 
 const ReminderScreen = () => {
-  const { schedulePushNotifications, manualPushNotification } =
-    useNotification();
-
   const [isModalVisible, setModalVisible] = useState(false);
   const [storedTimes, setStoredTimes] = useState([]);
   const navigation = useNavigation();
+  const { schedulePushNotifications } = useNotification();
 
   useFocusEffect(
     React.useCallback(() => {
@@ -89,7 +86,6 @@ const ReminderScreen = () => {
           />
         </View>
       </Modal>
-      <Button title="notificação manual" onPress={manualPushNotification} />
     </>
   );
 };

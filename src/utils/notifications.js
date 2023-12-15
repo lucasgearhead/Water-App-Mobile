@@ -65,33 +65,15 @@ export function useNotification() {
   };
 
   return {
-    notification,
-    schedulePushNotification,
     schedulePushNotifications,
-    manualPushNotification,
   };
 }
 
 export async function schedulePushNotification(trigger) {
   await Notifications.scheduleNotificationAsync({
     content: {
-      title: "Você tem uma nova mensagem! 📬",
-      body: "Aqui está o corpo da notificação",
-      priority: Notifications.AndroidImportance.HIGH,
+      title: "Não se esqueça de tomar água!",
     },
     trigger,
-  });
-}
-
-export async function manualPushNotification() {
-  await Notifications.scheduleNotificationAsync({
-    content: {
-      title: "Você tem uma nova mensagem manual!",
-      body: "Aqui está o corpo da notificação",
-      priority: Notifications.AndroidImportance.HIGH,
-    },
-    trigger: {
-      seconds: 60,
-    },
   });
 }
