@@ -8,13 +8,14 @@ import Animated, {
   withTiming,
   withRepeat,
 } from "react-native-reanimated";
+import { colors } from "../../Constants/constants";
 
 const { width } = Dimensions.get("screen");
 const AnimatedPath = Animated.createAnimatedComponent(Path);
 const AnimatedSvg = Animated.createAnimatedComponent(Svg);
 
 export default function Waves() {
-  const heightAnimated = useSharedValue(100);
+  const heightAnimated = useSharedValue(150);
   const waveAnimated = useSharedValue(5);
 
   const svgContainerProps = useAnimatedProps(() => {
@@ -77,19 +78,21 @@ export default function Waves() {
 
   return (
     <>
-      <AnimatedSvg animatedProps={svgContainerProps}>
+      <AnimatedSvg
+        animatedProps={svgContainerProps}
+        style={{ position: "absolute", bottom: 0, zIndex: -1 }}
+      >
         <AnimatedPath
           animatedProps={firstWaveProps}
-          fill={"blue"}
+          fill={colors.secondary}
           transform="translate(0, 10)"
         />
         <AnimatedPath
           animatedProps={secondWaveProps}
-          fill={"red"}
+          fill={colors.primary}
           transform="translate(0, 15)"
         />
       </AnimatedSvg>
-      <Button title="subir" onPress={handleDrink} />
     </>
   );
 }

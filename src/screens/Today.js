@@ -196,7 +196,7 @@ const TodayScreen = () => {
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
-          backgroundColor: "red",
+          marginBottom: 10,
         }}
       >
         <View
@@ -205,7 +205,6 @@ const TodayScreen = () => {
             flexDirection: "row",
             marginBottom: 5,
             alignSelf: "center",
-            backgroundColor: "yellow",
           }}
         >
           <TextInput
