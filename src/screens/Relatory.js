@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, StyleSheet, ScrollView } from "react-native";
+import { View, Text, StyleSheet, ScrollView, Dimensions } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useFocusEffect } from "@react-navigation/native";
 import { LineChart, YAxis, XAxis } from "react-native-svg-charts";
@@ -76,9 +76,7 @@ const RelatoryScreen = () => {
       <ScrollView style={styles.container}>
         {todayCups.length === 0 ? (
           <View style={styles.noRecordsContainer}>
-            <Text style={styles.noRecordsText}>
-              Seu histórico de consumo será exibido aqui
-            </Text>
+            <Text style={styles.noRecordsText}>Não houve consumo hoje.</Text>
           </View>
         ) : (
           <>
@@ -152,6 +150,7 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: "bold",
     color: colors.white,
+    alignSelf: "center",
   },
   chartContainer: {
     height: 350,
@@ -165,12 +164,13 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   noRecordsContainer: {
+    height: Dimensions.get("screen").height - 200,
     alignItems: "center",
     justifyContent: "center",
-    marginVertical: 20,
   },
   noRecordsText: {
-    fontSize: 18,
+    fontSize: 25,
+    fontWeight: "500",
     color: colors.text,
   },
 });
