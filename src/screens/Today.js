@@ -4,6 +4,7 @@ import { colors } from "../Constants/constants";
 
 import { useFocusEffect } from "@react-navigation/native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import Waves from "../Components/waves/Waves";
 
 const TodayScreen = () => {
   const [goalValue, setGoalValue] = useState("");
@@ -195,72 +196,64 @@ const TodayScreen = () => {
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
-          marginBottom: 40,
+          backgroundColor: "red",
         }}
       >
         <View
           style={{
-            position: "absolute",
-            height: 300,
-            width: "100%",
-            backgroundColor: colors.primary,
-            bottom: -160,
+            display: "flex",
+            flexDirection: "row",
+            marginBottom: 5,
+            alignSelf: "center",
+            backgroundColor: "yellow",
           }}
         >
-          <View
+          <TextInput
             style={{
-              display: "flex",
-              flexDirection: "row",
-              marginBottom: 5,
-              alignSelf: "center",
+              width: 50,
+              color: colors.text,
+              textAlign: "center",
+              fontWeight: "500",
+              borderWidth: 0,
+              borderColor: "#00000000",
+              borderWidth: 0,
+            }}
+            onEndEditing={handleCupValue}
+            keyboardType="numeric"
+            maxLength={4}
+            value={cupValue}
+            onChangeText={(value) => setCupValue(value)}
+          />
+          <Text
+            style={{
+              color: colors.text,
+              fontWeight: "500",
+              marginTop: 4,
             }}
           >
-            <TextInput
-              style={{
-                width: 50,
-                color: colors.text,
-                textAlign: "center",
-                fontWeight: "500",
-                borderWidth: 0,
-                borderColor: "#00000000",
-                borderWidth: 0,
-              }}
-              onEndEditing={handleCupValue}
-              keyboardType="numeric"
-              maxLength={4}
-              value={cupValue}
-              onChangeText={(value) => setCupValue(value)}
-            />
-            <Text
-              style={{
-                color: colors.text,
-                fontWeight: "500",
-                marginTop: 4,
-              }}
-            >
-              ml
-            </Text>
-          </View>
-
-          <TouchableOpacity
-            onPress={handleCupsValue}
-            style={{
-              elevation: 10,
-              marginBottom: 40,
-              width: 180,
-              alignSelf: "center",
-              backgroundColor: colors.buttonColor,
-              padding: 10,
-              paddingHorizontal: 30,
-              borderRadius: 30,
-              justifyContent: "center",
-              alignItems: "center",
-            }}
-          >
-            <Text style={{ fontSize: 20, fontWeight: "bold" }}>BEBER</Text>
-          </TouchableOpacity>
+            ml
+          </Text>
         </View>
+
+        <TouchableOpacity
+          onPress={handleCupsValue}
+          style={{
+            elevation: 10,
+            marginBottom: 40,
+            width: 180,
+            alignSelf: "center",
+            backgroundColor: colors.buttonColor,
+            padding: 10,
+            paddingHorizontal: 30,
+            borderRadius: 30,
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          <Text style={{ fontSize: 20, fontWeight: "bold" }}>BEBER</Text>
+        </TouchableOpacity>
       </View>
+      <Waves />
     </View>
   );
 };
