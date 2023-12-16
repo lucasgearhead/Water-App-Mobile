@@ -1,6 +1,4 @@
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import { useState, useEffect } from "react";
-import { Switch, TouchableOpacity } from "react-native";
 import ReminderScreen from "../screens/Reminder";
 import TabRoutes from "./tab";
 import { colors } from "../Constants/constants";
@@ -27,7 +25,7 @@ export default function StackRoutes() {
           headerShadowVisible: false,
           headerShown: true,
           title: "Lembretes",
-          animation: "default",
+          animation: "fade",
         }}
       />
     </Stack.Navigator>
