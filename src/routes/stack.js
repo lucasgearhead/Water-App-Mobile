@@ -13,7 +13,10 @@ export default function StackRoutes() {
       <Stack.Screen
         name="tabs"
         component={TabRoutes}
-        options={{ headerShown: false }}
+        options={{
+          headerShown: false,
+          animation: "slide_from_right",
+        }}
       />
       <Stack.Screen
         name="reminder"
@@ -24,7 +27,7 @@ export default function StackRoutes() {
           headerShadowVisible: false,
           headerShown: true,
           title: "Lembretes",
-          animation: "none",
+          animation: "default",
         }}
       />
     </Stack.Navigator>

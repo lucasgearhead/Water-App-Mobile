@@ -85,7 +85,7 @@ const TodayScreen = () => {
         const nextReminderTime = `${nextReminderDate.getHours()}:${nextReminderDate.getMinutes()}`;
         setNextReminder(`Próximo lembrete às ${nextReminderTime}`);
       } else {
-        setNextReminder("Não possui mais lembretes hoje.");
+        setNextReminder("Não há lembretes hoje.");
       }
     } catch (error) {
       console.error("Error calculating next reminder:", error);
