@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Button, Dimensions } from "react-native";
 import { Svg, Path } from "react-native-svg";
 import Animated, {
@@ -15,6 +15,21 @@ const AnimatedPath = Animated.createAnimatedComponent(Path);
 const AnimatedSvg = Animated.createAnimatedComponent(Svg);
 
 export default function Waves() {
+  useEffect(() => {
+    function handleDrink() {
+      waveAnimated.value = 5;
+      waveAnimated.value = withRepeat(
+        withTiming(20, {
+          duration: 2200,
+          easing: Easing.linear,
+        }),
+        -1,
+        true
+      );
+    }
+    handleDrink();
+  }, []);
+
   const heightAnimated = useSharedValue(150);
   const waveAnimated = useSharedValue(5);
 
@@ -30,12 +45,9 @@ export default function Waves() {
     return {
       d: `
     M 0 0
-    Q 45 ${waveAnimated.value} 90 0
+    Q ${waveAnimated.value} 20 70 0
     T 180 0
-    T 270 0
-    T 360 0
-    T 900 0
-    T 540 0
+    T 420 0
     V ${heightAnimated.value}
     H 0
     Z
@@ -47,11 +59,8 @@ export default function Waves() {
     return {
       d: `
     M 0 0
-    Q 35 ${waveAnimated.value + 5} 70 0
-    T 140 0
-    T 210 0
+    Q ${waveAnimated.value + 20} 15 120 0
     T 280 0
-    T 350 0
     T 420 0
     V ${heightAnimated.value}
     H 0
@@ -60,16 +69,7 @@ export default function Waves() {
     };
   });
 
-  function handleDrink() {
-    waveAnimated.value = 5;
-    waveAnimated.value = withRepeat(
-      withTiming(17, {
-        duration: 500,
-        easing: Easing.ease,
-      }),
-      2,
-      true
-    );
+  function handleHeight() {
     heightAnimated.value = withTiming(heightAnimated.value + 100, {
       duration: 1000,
       easing: Easing.ease,
@@ -90,7 +90,7 @@ export default function Waves() {
         <AnimatedPath
           animatedProps={secondWaveProps}
           fill={colors.primary}
-          transform="translate(0, 15)"
+          transform="translate(0, 25)"
         />
       </AnimatedSvg>
     </>

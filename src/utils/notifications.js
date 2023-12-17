@@ -45,6 +45,8 @@ export function useNotification() {
 
   const schedulePushNotifications = async () => {
     try {
+      await Notifications.cancelAllScheduledNotificationsAsync();
+
       const storedTimes = await AsyncStorage.getItem("selectedTimes");
       if (storedTimes) {
         const hours = JSON.parse(storedTimes);
