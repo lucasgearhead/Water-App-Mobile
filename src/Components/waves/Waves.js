@@ -15,57 +15,48 @@ const AnimatedPath = Animated.createAnimatedComponent(Path);
 const AnimatedSvg = Animated.createAnimatedComponent(Svg);
 
 export default function Waves() {
-  useEffect(() => {
-    function handleDrink() {
-      waveAnimated.value = 5;
-      waveAnimated.value = withRepeat(
-        withTiming(20, {
-          duration: 2200,
-          easing: Easing.linear,
-        }),
-        -1,
-        true
-      );
-    }
-    handleDrink();
-  }, []);
-
-  const heightAnimated = useSharedValue(150);
+  const heightAnimated = useSharedValue(200);
   const waveAnimated = useSharedValue(5);
 
   const svgContainerProps = useAnimatedProps(() => {
     return {
       width,
       height: heightAnimated.value,
-      viewBox: `0 0 ${width} ${heightAnimated.value}`,
+      viewBox: `0 -${width * 0.23} ${width} ${heightAnimated.value}`,
     };
   });
 
   const firstWaveProps = useAnimatedProps(() => {
     return {
       d: `
-    M 0 0
-    Q ${waveAnimated.value} 20 70 0
-    T 180 0
-    T 420 0
-    V ${heightAnimated.value}
-    H 0
-    Z
-    `,
+        M 0 ${-width * 0.0476}
+        C ${width * 0.24}
+          ${width * 0.2}
+          ${width * 0.667}
+          ${-width * 0.215}
+          ${width}
+          ${-width * 0.0476} 
+        V ${heightAnimated.value}
+        H 0
+        Z
+      `,
     };
   });
 
   const secondWaveProps = useAnimatedProps(() => {
     return {
       d: `
-    M 0 0
-    Q ${waveAnimated.value + 20} 15 120 0
-    T 280 0
-    T 420 0
-    V ${heightAnimated.value}
-    H 0
-    Z
-    `,
+        M 0 0
+        C ${width / 2.5}
+          ${-width * 0.2}
+          ${width / 2}
+          ${width * 0.095}
+          ${width}
+          ${-width * 0.028}
+        V ${heightAnimated.value}
+        H 0
+        Z
+      `,
     };
   });
 
@@ -78,20 +69,9 @@ export default function Waves() {
 
   return (
     <>
-      <AnimatedSvg
-        animatedProps={svgContainerProps}
-        style={{ position: "absolute", bottom: 0, zIndex: -1 }}
-      >
-        <AnimatedPath
-          animatedProps={firstWaveProps}
-          fill={colors.secondary}
-          transform="translate(0, 10)"
-        />
-        <AnimatedPath
-          animatedProps={secondWaveProps}
-          fill={colors.primary}
-          transform="translate(0, 25)"
-        />
+      <AnimatedSvg animatedProps={svgContainerProps}>
+        <AnimatedPath animatedProps={firstWaveProps} fill={colors.secondary} />
+        <AnimatedPath animatedProps={secondWaveProps} fill={colors.primary} />
       </AnimatedSvg>
     </>
   );
