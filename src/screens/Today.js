@@ -196,7 +196,9 @@ const TodayScreen = () => {
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
-          marginBottom: 10,
+          position: "absolute",
+          bottom: "0%",
+          zIndex: 999,
         }}
       >
         <View
